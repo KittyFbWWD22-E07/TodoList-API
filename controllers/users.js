@@ -2,6 +2,13 @@ import { User } from "../models/user.js";
 import createError from "http-errors";
 import { createToken } from "../utils/jwt.js";
 
+const COOKIE_OPTIONS = {
+    maxAge: 3_600_000 * 48,
+    httpOnly: true,
+    sameSite: true,
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+}
+
 // GET users 
 export const getAllUsers = async (req, res, next) => {
     try {
@@ -22,7 +29,8 @@ export const signUp = async (req, res, next) => {
         newUser.password = undefined;
         // Create token
         const token = await createToken({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET);
-
+        // Set cookies
+        res.cookie('access_token', token, COOKIE_OPTIONS);
         // User succesfully created 
         res.status(201).json({ message: 'User created succesfully', 'user': newUser });
     } catch (error) {
@@ -47,12 +55,51 @@ export const login = async (req, res, next) => {
         if (!user && !isMatch) {
             throw createError(400, 'Login failed, invalid credentials');
         }
-        // generate token
-        // const token = await user.generateToken();
+        // Create token
+        const token = await createToken({ id: user._id, role: user.role }, process.env.JWT_SECRET);
+        // Set cookies
+        res.cookie('access_token', token, COOKIE_OPTIONS);
+        // User succesfully logged in
         res.status(200).json({ message: 'User logged in succesfully', 'user': user });
     } catch (error) {
         next(error);
     }
 }
 
-// 
+// PUT user/:id
+export const updateUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { fullname, email, password, role } = req.body;
+        const user = await User.findById(id);
+        if (!user) {
+            throw createError(404, 'User not found');
+        }
+        user.fullname = fullname || user.fullname;
+        user.email = email || user.email;
+        user.password = password || user.password;
+        await user.save();
+        user.password = undefined;
+        res.status(200).json({ message: 'User updated succesfully', 'user': user });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// DELETE user/:id
+export const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+        if (!user) {
+            throw createError(404, 'User not found');
+        }
+        const deletedUser = await User.findByIdAndRemove(id);
+        res.status(200).json({ message: `${user.id} deleted succesfully`, 'user': deletedUser });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+
