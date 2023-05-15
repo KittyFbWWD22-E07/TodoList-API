@@ -1,7 +1,7 @@
-import {Schema, model} from 'mongoose';
+import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-const userSchema = new Schema ({
+const userSchema = new Schema({
     fullname: {
         type: String,
         required: [true, 'Please provide your fullname'],
@@ -30,9 +30,9 @@ const userSchema = new Schema ({
 });
 
 // hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
     try {
-        if(!this.isModified('password')) {
+        if (!this.isModified('password')) {
             return next();
         }
 
@@ -53,5 +53,13 @@ userSchema.pre('save', async function(next) {
         next(error);
     }
 });
+
+userSchema.methods.comparePassword = async function (password) {
+    try {
+        return await bcrypt.compare(password, this.password);
+    } catch (error) {
+        throw new Error(error);
+    }
+}
 
 export const User = model('User', userSchema);
