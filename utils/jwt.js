@@ -10,3 +10,8 @@ export const createToken = async (payload, secretMessage) => {
             expiresIn: '1d'
         })
 }
+
+export const verifyToken = async (token, secretMessage) => {
+    const asyncVerify = promisify(jwt.verify);
+    return await asyncVerify(token, secretMessage);
+}
