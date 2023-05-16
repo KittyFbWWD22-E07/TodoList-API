@@ -1,26 +1,28 @@
 import express from 'express';
 import { deleteUser, getAllUsers, login, signUp, updateUser } from '../controllers/users.js';
+import { loginValidation, userValidation } from '../validation/user.js';
+import { authorize, protect } from '../middlewares/auth.js';
 
 const router = express.Router();
 
 // Signup
 router.route('/signup')
-    .post(signUp);
+    .post(validator(userValidation), signUp);
 
 // Signin
 router.route('/login')
-    .post(login);
+    .post(validator(loginValidation),  login);
 
 // get all users
 router.route('/')
-    .get(getAllUsers);
+    .get(protect(), authorize('admin'), getAllUsers);
 
 // update user
 router.route('/:id')
-    .put(updateUser);
+    .put(protect(),authorize('user') , updateUser);
 
 // delete user
 router.route('/:id')
-    .delete(deleteUser);
+    .delete(protect(), authorize('admin'), deleteUser);
 
 export default router;
