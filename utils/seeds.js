@@ -1,4 +1,4 @@
-import {faker} from 'meteor/faker';
+import {faker} from '@faker-js/faker';
 import {User} from '../models/user.js';
 import {Task} from '../models/task.js';
 
