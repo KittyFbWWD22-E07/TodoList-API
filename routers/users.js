@@ -17,12 +17,11 @@ router.route('/login')
 router.route('/')
     .get(protect(), authorize('admin'), getAllUsers);
 
-// update user
+// update and delete user
 router.route('/:id')
-    .put(protect(),authorize('user') , updateUser);
-
-// delete user
-router.route('/:id')
+    .put(protect(),authorize('user') , updateUser)
     .delete(protect(), authorize('admin'), deleteUser);
 
+
+    
 export default router;
