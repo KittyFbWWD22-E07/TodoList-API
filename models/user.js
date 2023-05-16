@@ -26,12 +26,12 @@ const userSchema = new Schema({
     updated_At: {
         type: Date,
         default: Date.now(),
-    }
+    },
 
-    // task: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Task',
-    // }
+    task: {
+        type: Schema.Types.ObjectId,
+        ref: 'Task',
+    }
 });
 
 // hash password before saving
