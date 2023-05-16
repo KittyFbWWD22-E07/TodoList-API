@@ -2,17 +2,18 @@ import express from 'express';
 import { addNewTask, deleteTask, getTaskListById, updateTask } from '../controllers/tasks.js';
 import {validator} from '../middlewares/validator.js';
 import { taskValidation } from '../validation/task.js';
+import { protect, authorize } from '../middlewares/auth.js';
 
 const router = express.Router();
 
 router.route('/:userId')
-    .get(getTaskListById)
+    .get(protect(), getTaskListById)
 
 router.route('/')
-    .post(validator(taskValidation),addNewTask)
+    .post(protect(), validator(taskValidation),addNewTask)
 
   router.route('/:taskId')
-    .put(updateTask)
-    .delete(deleteTask)
+    .put(protect(), authorize('user'), updateTask)
+    .delete(protect(), deleteTask)
 
 export default router;

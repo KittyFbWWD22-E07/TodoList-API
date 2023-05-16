@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import userRouter from './routers/users.js';
+import taskRouter from './routers/tasks.js';
 import { genericErrHandler, noRoute } from './middlewares/err.handler.js';
 import { connectToDB } from './utils/db.js';
 
@@ -25,7 +26,7 @@ app.use(cors());
 
 // routes
 app.use('/users', userRouter);
-// app.use('/tasks', taskRouter);
+app.use('/tasks', taskRouter);
 
 // error handlers
 app.use(noRoute);
