@@ -28,10 +28,10 @@ const userSchema = new Schema({
         default: Date.now(),
     },
 
-    task: {
+    tasks: [{
         type: Schema.Types.ObjectId,
         ref: 'Task',
-    }
+    }]
 });
 
 // hash password before saving

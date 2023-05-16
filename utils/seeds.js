@@ -19,8 +19,9 @@ export const seedDatabase = async (minDocs) => {
             const user = {
                 fullname: faker.person.fullName(),
                 email: faker.internet.email(),
-                password: faker.internet.password({length: 8, pattern: /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$?-_#])[a-zA-Z0-9!$?-_#]{8,}/}),
+                password: 'Balooba24!',
                 role: faker.helpers.arrayElement(['admin', 'user']),
+                // task: [],
             };
             users.push(user);
         }
@@ -36,9 +37,9 @@ export const seedDatabase = async (minDocs) => {
         if (allUsers.length > 0) {
             for (let i = 0; i < allUsers.length; i++) {
                 // check if user has any tasks already
-                const numCurTasks = await User.countDocuments({task: allUsers[i]._id});
+                const numCurTasks = await Task.countDocuments({user: allUsers[i]._id});
 
-                for (let j = 0; j < (2 - numCurTasks); j++) {
+                for (let j = 0; j < (3 - numCurTasks); j++) {
                     let task = {};
                     task.title = faker.lorem.words(3);
                     task.description = faker.lorem.sentence();
@@ -47,10 +48,16 @@ export const seedDatabase = async (minDocs) => {
                     task.date = faker.date.recent({days: 7});
                     task.deadline = faker.date.future({days: 7});
 
-                    // tasks.push(task);
-
+                    // store task in database
                     const newTask = await Task.create(task);
-                    allUsers[i].task.push(newTask._id);
+
+                    // initialize user's tasks array if it's empty
+                    if (!allUsers[i].tasks) {
+                        allUsers[i].tasks = [];
+                    }
+                    
+                    // add task to user's tasks array
+                    allUsers[i].tasks.push(newTask._id);
                 }
 
                 // save user
