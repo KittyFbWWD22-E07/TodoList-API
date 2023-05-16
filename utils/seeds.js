@@ -28,11 +28,13 @@ export const seedDatabase = async (minDocs) => {
         // 3. Insert fake users into the database
         await User.create(users);
         console.log('Users seeded successfully!');
+
+        // 4. Generate 3 fake tasks for each user
         let tasks = [];
         const numCurTasks = await Task.countDocuments();
-        if (minDocs > numCurTasks) {
-            return console.log('Skip task seeding!');
-        }
+        // if (minDocs > numCurTasks) {
+        //     return console.log('Skip task seeding!');
+        // }
 
         const allUsers = await User.find();
         if (allUsers.length > 0) {

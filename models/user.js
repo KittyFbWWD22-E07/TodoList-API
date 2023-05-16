@@ -16,7 +16,7 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: [true, 'Please provide your password'],
-        matches: [/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$?-_#])[a-zA-Z0-9!$?-_#]{8,}$/, 'Your password should ONLY contain letters, numbers, and special characters($!?:_). It should be at least 8 characters long.'],
+        matches: [/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+-?]).{8,}$/, 'Your password should contain at least one Capital letter, one small letter, one number, and one special character. It should be at least 8 characters long.'],
     },
     role: {
         type: String,
