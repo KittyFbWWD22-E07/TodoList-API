@@ -6,7 +6,7 @@ export async function connectToDB() {
   try {
     await mongoose.connect(process.env.DB_URL);
     console.log("✅ Database Connection Established! \n----");
-    seedDatabase(20);
+    await seedDatabase(20);
   } catch (error) {
     console.error(error.message);
   }
