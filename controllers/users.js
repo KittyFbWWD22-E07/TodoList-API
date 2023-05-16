@@ -9,17 +9,17 @@ const COOKIE_OPTIONS = {
     secure: process.env.NODE_ENV === 'production' ? true : false,
 }
 
-// GET users 
+// GET users
 export const getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find();
-        res.status(200).json({ message: 'GET users succesfully', 'users': users });
+        res.status(200).json({ message: 'GET users successfully', 'users': users });
     } catch (error) {
         next(error);
     }
 };
 
-// POST user/signup   
+// POST user/signup
 export const signUp = async (req, res, next) => {
     try {
         const { fullname, email, password, role } = req.body;
@@ -31,8 +31,8 @@ export const signUp = async (req, res, next) => {
         const token = await createToken({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET);
         // Set cookies
         res.cookie('access_token', token, COOKIE_OPTIONS);
-        // User succesfully created 
-        res.status(201).json({ message: 'User created succesfully', 'user': newUser });
+        // User successfully created
+        res.status(201).json({ message: 'User created successfully', 'user': newUser });
     } catch (error) {
         next(error)
     }
@@ -59,8 +59,8 @@ export const login = async (req, res, next) => {
         const token = await createToken({ id: user._id, role: user.role }, process.env.JWT_SECRET);
         // Set cookies
         res.cookie('access_token', token, COOKIE_OPTIONS);
-        // User succesfully logged in
-        res.status(200).json({ message: 'User logged in succesfully', 'user': user });
+        // User successfully logged in
+        res.status(200).json({ message: 'User logged in successfully', 'user': user });
     } catch (error) {
         next(error);
     }
@@ -78,9 +78,12 @@ export const updateUser = async (req, res, next) => {
         user.fullname = fullname || user.fullname;
         user.email = email || user.email;
         user.password = password || user.password;
+
         await user.save();
+
         user.password = undefined;
-        res.status(200).json({ message: 'User updated succesfully', 'user': user });
+
+        res.status(200).json({ message: 'User updated successfully', 'user': user });
     } catch (error) {
         next(error);
     }
@@ -95,11 +98,8 @@ export const deleteUser = async (req, res, next) => {
             throw createError(404, 'User not found');
         }
         const deletedUser = await User.findByIdAndRemove(id);
-        res.status(200).json({ message: `${user.id} deleted succesfully`, 'user': deletedUser });
+        res.status(200).json({ message: `${user.id} deleted successfully`, 'user': deletedUser });
     } catch (error) {
         next(error);
     }
 }
-
-
-
