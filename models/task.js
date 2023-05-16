@@ -11,11 +11,11 @@ const taskSchema = new Schema({
     },
     status: {
         required: true,
-        enum: [pending,
-            inProgress,
-            completed],
+        enum: ['pending',
+            'inProgress',
+            'completed'],
         type: String,
-        default: pending,
+        default: 'pending',
 
     },
     user: {
