@@ -1,6 +1,8 @@
 import { User } from "../models/user.js";
 import createError from "http-errors";
 import { createToken } from "../utils/jwt.js";
+import { taskValidation } from "../validation/task.js";
+import { Task } from "../models/task.js";
 
 const COOKIE_OPTIONS = {
     maxAge: 3_600_000 * 48,
@@ -97,8 +99,15 @@ export const deleteUser = async (req, res, next) => {
         if (!user) {
             throw createError(404, 'User not found');
         }
+
+        const deletedTasks = await Task.deleteMany({ user: user._id});
         const deletedUser = await User.findByIdAndRemove(id);
-        res.status(200).json({ message: `${user.id} deleted successfully`, 'user': deletedUser });
+    
+        res.status(200).json({ 
+            message: `${user.id} deleted successfully`, 
+            'user': deletedUser ,
+            'tasks': deletedTasks});
+            
     } catch (error) {
         next(error);
     }

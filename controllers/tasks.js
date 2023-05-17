@@ -1,11 +1,12 @@
 import {Task} from '../models/task.js';
+import {User} from '../models/user.js';
 import createError from 'http-errors';
 
 // GET /tasks
 export const getTaskListById = async (req, res, next) => {
     try {
         const {userId} = req.params;
-        const taskList = await Task.findById(userId);
+        const taskList = await Task.find({user: userId});
 
         if(!taskList){
             throw createError(404, "No task assigned to this user");
@@ -72,12 +73,17 @@ export const deleteTask = async (req, res, next) => {
         if(!task){
             throw createError(404, "Task with this id does not exist");
         }
+        const taskOwner = await User.findById(task.user);
+        taskOwner.tasks = taskOwner.tasks.filter(tid => tid.toString() !== taskId)
+        await taskOwner.save();
+        console.log(taskOwner);
 
         const deletedTask = await Task.findByIdAndRemove(taskId);
 
         res.status(200).json({
             message: "Task with given id is deleted successfully",
-            task: deletedTask
+            task: deletedTask,
+            taskOwner
         })
     } catch (error) {
         next(error);

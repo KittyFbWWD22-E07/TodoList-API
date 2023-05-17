@@ -12,10 +12,10 @@ export const protect = function (){
                 authHeader && authHeader.startsWith("Bearer")
                 && authHeader.split(" ")[1];
          // to get the token from the cookie
-                token = req.cookies.access_token;
-            if (!token) {
-                throw createError(401, "Token not found");
-            }
+            //     token = req.cookies.access_token;
+            // if (!token) {
+            //     throw createError(401, "Token not found");
+            // }
 
             const decoded = await verifyToken(token, process.env.JWT_SECRET);
             console.log("decoded:", decoded);
@@ -25,7 +25,7 @@ export const protect = function (){
                 throw createError(401, "User not found");
             }
 
-            let update_in_sec = parseInt(user.updatedAt.getTime() / 1000);
+            let update_in_sec = parseInt(user.updated_At.getTime() / 1000);
             if (decoded.iat < update_in_sec) {
                 throw createError(401, "Token is expired, please login again");
             }
@@ -40,7 +40,8 @@ export const protect = function (){
 export const authorize = (...roles) => {
     return (req, res, next) => {
         try {
-            if(!roles.includes(req.jwt.roles)){
+            console.log(req.jwt)
+            if(!roles.includes(req.jwt.role)){
                 throw createError(403, "you don't have permission to access");
             }
             next();
