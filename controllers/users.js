@@ -25,8 +25,8 @@ export const getAllUsers = async (req, res, next) => {
 export const signUp = async (req, res, next) => {
     try {
         const { fullname, email, password, role } = req.body;
-        //  if (req.validationErrors.length) {
-        //    return res.status(400).json({ message: 'Validation errors', errors: req.validationErrors
+        // if (req.validationErrors.length) {
+        // return res.status(400).json({ message: 'Validation errors', errors: req.validationErrors
         const newUser = await User.create({ fullname, email, password, role });
         newUser.password = undefined;
         // Create token
@@ -100,9 +100,13 @@ export const deleteUser = async (req, res, next) => {
             throw createError(404, 'User not found');
         }
 
-        const deletedTasks = await Task.deleteMany({ user: user._id});
+        const deletedTasks = await Task.deleteMany({ user: user._id });
         const deletedUser = await User.findByIdAndRemove(id);
-        res.status(200).json({ message: `${user.id} deleted successfully`, 'user': deletedUser });
+        res.status(200).json({
+            message: `${user.id} deleted successfully`,
+            'user': deletedUser,
+            'tasks': deletedTasks
+        });
     } catch (error) {
         next(error);
     }
