@@ -102,12 +102,7 @@ export const deleteUser = async (req, res, next) => {
 
         const deletedTasks = await Task.deleteMany({ user: user._id});
         const deletedUser = await User.findByIdAndRemove(id);
-    
-        res.status(200).json({ 
-            message: `${user.id} deleted successfully`, 
-            'user': deletedUser ,
-            'tasks': deletedTasks});
-            
+        res.status(200).json({ message: `${user.id} deleted successfully`, 'user': deletedUser });
     } catch (error) {
         next(error);
     }
