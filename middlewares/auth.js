@@ -8,7 +8,7 @@ export const protect = function (){
         try {
         // to get token from authorization header
             const authHeader = req.headers["authorization"];
-            token = 
+            token =
                 authHeader && authHeader.startsWith("Bearer")
                 && authHeader.split(" ")[1];
          // to get the token from the cookie
